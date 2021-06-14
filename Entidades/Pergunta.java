@@ -3,7 +3,6 @@ import java.util.Calendar;
 import java.util.TimeZone;
 import java.text.SimpleDateFormat;
 import java.text.Normalizer;
-import java.util.Comparator;
 
 import jdk.jshell.spi.ExecutionControl.NotImplementedException;
 
@@ -14,18 +13,8 @@ public class Pergunta implements Registro
   private long criacao;
   private short nota;
   private String pergunta;
-  private boolean ativa;
   //o método utilizado vai ser todas as palavras chaves dividas por ponto e virgula
   private String palavrasChave;
-
-  public static Comparator<Pergunta> comparadorNota = new Comparator<Pergunta>() {
-    public int compare(Pergunta p1, Pergunta p2){
-      int nota1 = p1.getNota();
-      int nota2 = p2.getNota();
-
-      return nota2-nota1;
-    }
-  };
 
   public Pergunta()
   {
@@ -39,7 +28,6 @@ public class Pergunta implements Registro
     this.pergunta = pergunta;
     this.criacao = 0;
     this.nota = 0;
-    this.ativa = true;
     this.palavrasChave = "";
   }
 
@@ -50,9 +38,9 @@ public class Pergunta implements Registro
     this.pergunta = pergunta;
     this.criacao = 0;
     this.nota = 0;
-    this.ativa = true;
+
     //Retirando os acentos.
-    this.palavrasChave = Normalizer.normalize(palavrasChave, Normalizer.Form.NFD);
+    this.palavrasChave = Normalizer.normalizer(palavrasChave, Normalize.Form.NFD);
     this.palavrasChave = this.palavrasChave.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
 
     this.palavrasChave = palavrasChave.toLowerCase().trim();
@@ -66,7 +54,6 @@ public class Pergunta implements Registro
     dos.writeInt(idUsuario);
     dos.writeLong(criacao);
     dos.writeShort(nota);
-    dos.writeBoolean(ativa);
     dos.writeUTF(pergunta);
     dos.writeUTF(palavrasChave);
     return baos.toByteArray();
@@ -80,7 +67,6 @@ public class Pergunta implements Registro
     this.idUsuario = dis.readInt();
     this.criacao = dis.readLong();
     this.nota = dis.readShort();
-    this.ativa = dis.readBoolean();
     this.pergunta = dis.readUTF();
     this.palavrasChave = dis.readUTF();
   } 
@@ -117,7 +103,7 @@ public class Pergunta implements Registro
 
   public void setCriacao() 
   {
-    Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("America/Sao_Paulo"));
+    Calendar calendar = calendar.getInstance(TimeZone.getTimeZone("America/Sao_Paulo"));
     this.criacao = calendar.getTimeInMillis();
   }
 
@@ -129,14 +115,6 @@ public class Pergunta implements Registro
   public void setNota(short nota) 
   {
     this.nota = nota;
-  }
-
-  public boolean isAtiva(){
-    return this.ativa;
-  }
-
-  public void setAtiva(boolean ativa){
-    this.ativa = ativa;
   }
 
   public String getPergunta() 
@@ -154,7 +132,7 @@ public class Pergunta implements Registro
   {
     return "Pergunta [criacao=" + criacao + ", idPergunta=" + idPergunta + ", idUsuario="
         + idUsuario + ", nota=" + nota + ", pergunta=" + pergunta + ", palavrasChave="
-        + palavrasChave + "]";
+        + palavrasChave "]";
   }
 
   public int getId()
@@ -172,7 +150,7 @@ public class Pergunta implements Registro
   }
 
   public void setPalavrasChave(String palavrasChave){
-    this.palavrasChave = Normalizer.normalize(palavrasChave, Normalizer.Form.NFD);
+    this.palavrasChave = Normalizer.normalizer(palavrasChave, Normalize.Form.NFD);
     this.palavrasChave = this.palavrasChave.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
 
     this.palavrasChave = palavrasChave.toLowerCase().trim();
