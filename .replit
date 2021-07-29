@@ -1,2 +1,2 @@
 language = "java10"
-run = "clear ; javac -classpath .:/run_dir/junit-4.12.jar:target/dependency/* -d . *.java ; java Main"
+run = "clear ;javac -classpath .:/run_dir/junit-4.12.jar:target/dependency/* -d . *.java arvoreBPlus/*.java CRUD/*.java Entidades/*.java HashExtensivel/*.java listaInvertida/*.java pcv/*.java; java Main"
